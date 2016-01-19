@@ -1,16 +1,26 @@
 (function(){
 'use strict';
 
+	var path = require('path');
+	var dir = path.resolve('.');
+	var pathObj =  path.parse(dir);
+    var root =pathObj.root;
 
-
-	console.log('Testing');
 	var zip = require('./7za.js');
 	// noInitialRun required
-	zip.FS.mkdir('/working');
-	zip.FS.mount(zip.NODEFS, { root: '/tmp' }, '/working');
+	var workDirName = '/workging';
+	zip.FS.mkdir(workDirName);
+	zip.FS.mount(zip.NODEFS, { root: root }, workDirName);
 
-	zip.callMain(['a', '/working/testX.zip', '/working/test/*']);
+	var args = process.argv.slice(2);
 
+	zip.FS.chdir(workDirName + dir);
+
+	if(args.length >0){
+		zip.callMain(args);
+	} else {
+		zip.callMain(['a', 'test.zip', 'test_file.tst']);
+	}
 
 
 })();
